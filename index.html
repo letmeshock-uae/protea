@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Protea — Editorial</title>
+  <style>
+    @font-face {
+      font-family: 'Ayer Poster Cursive';
+      src: url('fonts/AyerPosterCursive-BlackItalic.otf') format('opentype');
+      font-weight: 900;
+      font-style: italic;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Struve';
+      src: url('fonts/Struve/Struve-Regular.woff2') format('woff2'),
+           url('fonts/Struve/Struve-Regular.woff') format('woff');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Struve';
+      src: url('fonts/Struve/Struve-Medium.woff2') format('woff2'),
+           url('fonts/Struve/Struve-Medium.woff') format('woff');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Struve';
+      src: url('fonts/Struve/Struve-Bold.woff2') format('woff2'),
+           url('fonts/Struve/Struve-Bold.woff') format('woff');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Martina Plantijn';
+      src: url('fonts/Martina/martina-plantijn-light.woff2') format('woff2');
+      font-weight: 300;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Martina Plantijn';
+      src: url('fonts/Martina/martina-plantijn-italic.woff2') format('woff2');
+      font-weight: 400;
+      font-style: italic;
+      font-display: swap;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --green: #a2dd00;
+      --bg: #070707;
+      --card-bg: #1c2a17;
+      --gray: #9f9f9f;
+      --question-bg: #2a2b28;
+      --question-border: rgba(106,106,106,0.5);
+      --pad: 18px;
+      --ease: cubic-bezier(0.4, 0, 0.2, 1);
+      --ease-out: cubic-bezier(0.0, 0, 0.2, 1);
+      --duration: 0.65s;
+    }
+
+    html, body {
+      height: 100%;
+      background: #000;
+      font-family: 'Struve', -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .phone {
+      position: relative;
+      width: 100%;
+      max-width: 440px;
+      height: 100vh;
+      height: 100dvh;
+      background: var(--bg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ===== STATUS BAR ===== */
+    .status-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      height: 54px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 26px 0;
+      background: transparent;
+    }
+    .status-bar .time {
+      font-family: 'SF Pro Display', -apple-system, sans-serif;
+      font-weight: 600;
+      font-size: 16px;
+      color: #fff;
+      letter-spacing: -0.3px;
+    }
+    .status-bar .icons { height: 14px; display: flex; align-items: center; }
+    .status-bar .icons img { height: 100%; width: auto; }
+
+    /* ===== SCROLLABLE AREA ===== */
+    .scroll-area {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+      padding-bottom: 120px;
+    }
+    .scroll-area::-webkit-scrollbar { display: none; }
+
+    /* ===== HERO SECTION (morphs between states) ===== */
+    .hero {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      border-radius: 0 0 36px 36px;
+      transition: height var(--duration) var(--ease), border-radius var(--duration) var(--ease), margin var(--duration) var(--ease), background 0.95s var(--ease) 0.2s;
+      will-change: height;
+    }
+    .hero.splash-state {
+      height: 100vh;
+      height: 100dvh;
+      margin: 0;
+      border-radius: 0 0 36px 36px;
+    }
+    .hero.compact-state {
+      height: 90px;
+      width: calc(100% - 2 * var(--pad));
+      margin: 82px 0 0 var(--pad);
+      border-radius: 8px;
+      cursor: pointer;
+      background: var(--card-bg);
+    }
+
+    .hero-image-wrap {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      transition: border-radius var(--duration) var(--ease);
+    }
+    .compact-state .hero-image-wrap { border-radius: 8px; }
+
+    .hero-image {
+      position: absolute;
+      top: 66px;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 15%;
+      transition: transform var(--duration) var(--ease), opacity 0.4s var(--ease), filter var(--duration) var(--ease);
+    }
+    .compact-state .hero-image {
+      transform: scale(1.2);
+      object-position: center 20%;
+      filter: brightness(0.6);
+    }
+
+    .hero-gradient {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 45%;
+      background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.95) 100%);
+      transition: opacity 0.3s var(--ease);
+    }
+    .compact-state .hero-gradient { opacity: 0; }
+
+    .hero-title {
+      position: absolute;
+      left: 50%;
+      width: 404px;
+      font-family: 'Ayer Poster Cursive', Georgia, serif;
+      font-weight: 900;
+      font-style: italic;
+      color: var(--green);
+      text-align: center;
+      line-height: 0.9;
+      white-space: nowrap;
+      font-feature-settings: 'ss08' 1;
+      transition: all var(--duration) var(--ease);
+      z-index: 2;
+    }
+    .splash-state .hero-title {
+      top: 75px;
+      font-size: clamp(72px, 27vw, 119px);
+      transform: translateX(-50%);
+    }
+    .compact-state .hero-title {
+      top: 50px;
+      font-size: 56px;
+      transform: translate(-50%, -50%);
+    }
+
+    .hero-subtitle {
+      position: absolute;
+      top: 180px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      font-family: 'Struve', sans-serif;
+      font-weight: 400;
+      font-size: clamp(20px, 6.8vw, 30px);
+      line-height: 0.9;
+      color: #fff;
+      text-align: center;
+      z-index: 2;
+      transition: opacity 0.3s var(--ease), transform 0.4s var(--ease);
+    }
+    .compact-state .hero-subtitle {
+      opacity: 0;
+      transform: translateX(-50%) translateY(-10px);
+    }
+
+    /* ===== TOOLTIPS ===== */
+    .tooltips {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+      transition: opacity 0.3s var(--ease);
+    }
+    .compact-state .tooltips { opacity: 0; pointer-events: none; }
+
+    .tooltip {
+      position: absolute;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 9px;
+      background: rgba(253,253,253,0.8);
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
+      border: 0.5px solid rgba(253,253,253,0.1);
+      border-radius: 11px;
+      box-shadow: 0 0 0 4px rgba(255,255,255,0.4);
+      font-family: 'Struve', sans-serif;
+      font-weight: 500;
+      font-size: 17px;
+      color: #262626;
+      pointer-events: auto;
+      cursor: pointer;
+      transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), opacity 0.3s var(--ease);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tooltip:active {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 3px rgba(255,255,255,0.5);
+    }
+    .tooltip.involucre  { top: 38%;  left: 8%;   transition-delay: 0.05s; }
+    .tooltip.bracts     { top: 52%;  left: 38%;  transition-delay: 0.1s;  }
+    .tooltip.florets    { top: 58%;  left: 8%;   transition-delay: 0.15s; }
+    .tooltip.receptacle { top: 72%;  left: 55%;  transition-delay: 0.2s;  }
+
+    /* ===== BRACTS DETAIL CONTENT ===== */
+    .bracts-content {
+      padding: 30px var(--pad) 20px;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.5s var(--ease-out) 0.2s, transform 0.5s var(--ease-out) 0.2s;
+      pointer-events: none;
+    }
+    .bracts-content.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .bracts-heading {
+      font-family: 'Struve', sans-serif;
+      font-weight: 700;
+      font-size: 45px;
+      color: #fff;
+      line-height: 1.2;
+      margin-bottom: 14px;
+    }
+
+    .bracts-tagline {
+      font-family: 'Martina Plantijn', Georgia, serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 27px;
+      line-height: 1.4;
+      color: #fff;
+      margin-bottom: 14px;
+      letter-spacing: 0.27px;
+      font-feature-settings: 'onum' 1, 'pnum' 1;
+    }
+
+    .bracts-body {
+      font-family: 'Martina Plantijn', Georgia, serif;
+      font-weight: 300;
+      font-size: 19px;
+      line-height: 1.4;
+      color: var(--gray);
+      margin-bottom: 18px;
+      letter-spacing: 0.19px;
+      font-feature-settings: 'onum' 1, 'pnum' 1;
+    }
+
+    .bracts-image {
+      width: 100%;
+      border-radius: 9px;
+      display: block;
+      margin-bottom: 18px;
+      overflow: hidden;
+      will-change: clip-path, transform;
+      clip-path: inset(14% 0 14% 0 round 9px);
+      transform: scale(1.08);
+      opacity: 0;
+      transition: clip-path 1s cubic-bezier(0.25, 1, 0.35, 1),
+                  transform 1s cubic-bezier(0.25, 1, 0.35, 1),
+                  opacity 0.4s ease;
+    }
+    .bracts-image.revealed {
+      clip-path: inset(0 0 0 0 round 9px);
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    /* ===== QUESTION CARDS ===== */
+    .questions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .question-card {
+      background: var(--question-bg);
+      border: 1px solid var(--question-border);
+      border-radius: 18px;
+      padding: 9px 18px;
+      font-family: 'Struve', sans-serif;
+      font-weight: 400;
+      font-size: 15px;
+      line-height: 1.8;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      -webkit-tap-highlight-color: transparent;
+      letter-spacing: 0.15px;
+      font-feature-settings: 'ss02' 1, 'onum' 1, 'pnum' 1;
+    }
+    .question-card:active {
+      background: #3a3b38;
+      transform: scale(0.98);
+    }
+
+    /* ===== BOTTOM BAR ===== */
+    .bottom-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 12;
+      padding: 4px var(--pad) 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding-bottom: max(env(safe-area-inset-bottom, 10px), 10px);
+    }
+
+    /* ===== PROGRESSIVE BLUR (shared) ===== */
+    .gradient-blur,
+    .gradient-blur-top {
+      position: absolute;
+      left: 0;
+      right: 0;
+      pointer-events: none;
+    }
+    .gradient-blur     { z-index: 11; bottom: 0; height: 180px; }
+    .gradient-blur-top { z-index: 11; top: 0;    height: 140px; }
+
+    .gradient-blur > div,
+    .gradient-blur::before,
+    .gradient-blur::after,
+    .gradient-blur-top > div,
+    .gradient-blur-top::before,
+    .gradient-blur-top::after {
+      position: absolute;
+      inset: 0;
+    }
+
+    /* --- Bottom blur (to bottom) --- */
+    .gradient-blur::before {
+      content: "";
+      z-index: 1;
+      backdrop-filter: blur(0.5px);
+      -webkit-backdrop-filter: blur(0.5px);
+      mask: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 12.5%, rgba(0,0,0,1) 25%, rgba(0,0,0,0) 37.5%);
+      -webkit-mask: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 12.5%, rgba(0,0,0,1) 25%, rgba(0,0,0,0) 37.5%);
+    }
+    .gradient-blur > div:nth-child(1) {
+      z-index: 2;
+      backdrop-filter: blur(1px);
+      -webkit-backdrop-filter: blur(1px);
+      mask: linear-gradient(to bottom, rgba(0,0,0,0) 12.5%, rgba(0,0,0,1) 25%, rgba(0,0,0,1) 37.5%, rgba(0,0,0,0) 50%);
+      -webkit-mask: linear-gradient(to bottom, rgba(0,0,0,0) 12.5%, rgba(0,0,0,1) 25%, rgba(0,0,0,1) 37.5%, rgba(0,0,0,0) 50%);
+    }
+    .gradient-blur > div:nth-child(2) {
+      z-index: 3;
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+      mask: linear-gradient(to bottom, rgba(0,0,0,0) 25%, rgba(0,0,0,1) 37.5%, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 62.5%);
+      -webkit-mask: linear-gradient(to bottom, rgba(0,0,0,0) 25%, rgba(0,0,0,1) 37.5%, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 62.5%);
+    }
+    .gradient-blur > div:nth-child(3) {
+      z-index: 4;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      mask: linear-gradient(to bottom, rgba(0,0,0,0) 37.5%, rgba(0,0,0,1) 50%, rgba(0,0,0,1) 62.5%, rgba(0,0,0,0) 75%);
+      -webkit-mask: linear-gradient(to bottom, rgba(0,0,0,0) 37.5%, rgba(0,0,0,1) 50%, rgba(0,0,0,1) 62.5%, rgba(0,0,0,0) 75%);
+    }
+    .gradient-blur > div:nth-child(4) {
+      z-index: 5;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      mask: linear-gradient(to bottom, rgba(0,0,0,0) 50%, rgba(0,0,0,1) 62.5%, rgba(0,0,0,1) 75%, rgba(0,0,0,0) 87.5%);
+      -webkit-mask: linear-gradient(to bottom, rgba(0,0,0,0) 50%, rgba(0,0,0,1) 62.5%, rgba(0,0,0,1) 75%, rgba(0,0,0,0) 87.5%);
+    }
+    .gradient-blur > div:nth-child(5) {
+      z-index: 6;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      mask: linear-gradient(to bottom, rgba(0,0,0,0) 62.5%, rgba(0,0,0,1) 75%, rgba(0,0,0,1) 87.5%, rgba(0,0,0,0) 100%);
+      -webkit-mask: linear-gradient(to bottom, rgba(0,0,0,0) 62.5%, rgba(0,0,0,1) 75%, rgba(0,0,0,1) 87.5%, rgba(0,0,0,0) 100%);
+    }
+    .gradient-blur > div:nth-child(6) {
+      z-index: 7;
+      backdrop-filter: blur(32px);
+      -webkit-backdrop-filter: blur(32px);
+      mask: linear-gradient(to bottom, rgba(0,0,0,0) 75%, rgba(0,0,0,1) 87.5%, rgba(0,0,0,1) 100%);
+      -webkit-mask: linear-gradient(to bottom, rgba(0,0,0,0) 75%, rgba(0,0,0,1) 87.5%, rgba(0,0,0,1) 100%);
+    }
+    .gradient-blur::after {
+      content: "";
+      z-index: 8;
+      backdrop-filter: blur(64px);
+      -webkit-backdrop-filter: blur(64px);
+      mask: linear-gradient(to bottom, rgba(0,0,0,0) 87.5%, rgba(0,0,0,1) 100%);
+      -webkit-mask: linear-gradient(to bottom, rgba(0,0,0,0) 87.5%, rgba(0,0,0,1) 100%);
+    }
+
+    /* --- Top blur (to top) --- */
+    .gradient-blur-top::before {
+      content: "";
+      z-index: 1;
+      backdrop-filter: blur(0.5px);
+      -webkit-backdrop-filter: blur(0.5px);
+      mask: linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 12.5%, rgba(0,0,0,1) 25%, rgba(0,0,0,0) 37.5%);
+      -webkit-mask: linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 12.5%, rgba(0,0,0,1) 25%, rgba(0,0,0,0) 37.5%);
+    }
+    .gradient-blur-top > div:nth-child(1) {
+      z-index: 2;
+      backdrop-filter: blur(1px);
+      -webkit-backdrop-filter: blur(1px);
+      mask: linear-gradient(to top, rgba(0,0,0,0) 12.5%, rgba(0,0,0,1) 25%, rgba(0,0,0,1) 37.5%, rgba(0,0,0,0) 50%);
+      -webkit-mask: linear-gradient(to top, rgba(0,0,0,0) 12.5%, rgba(0,0,0,1) 25%, rgba(0,0,0,1) 37.5%, rgba(0,0,0,0) 50%);
+    }
+    .gradient-blur-top > div:nth-child(2) {
+      z-index: 3;
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+      mask: linear-gradient(to top, rgba(0,0,0,0) 25%, rgba(0,0,0,1) 37.5%, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 62.5%);
+      -webkit-mask: linear-gradient(to top, rgba(0,0,0,0) 25%, rgba(0,0,0,1) 37.5%, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 62.5%);
+    }
+    .gradient-blur-top > div:nth-child(3) {
+      z-index: 4;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      mask: linear-gradient(to top, rgba(0,0,0,0) 37.5%, rgba(0,0,0,1) 50%, rgba(0,0,0,1) 62.5%, rgba(0,0,0,0) 75%);
+      -webkit-mask: linear-gradient(to top, rgba(0,0,0,0) 37.5%, rgba(0,0,0,1) 50%, rgba(0,0,0,1) 62.5%, rgba(0,0,0,0) 75%);
+    }
+    .gradient-blur-top > div:nth-child(4) {
+      z-index: 5;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      mask: linear-gradient(to top, rgba(0,0,0,0) 50%, rgba(0,0,0,1) 62.5%, rgba(0,0,0,1) 75%, rgba(0,0,0,0) 87.5%);
+      -webkit-mask: linear-gradient(to top, rgba(0,0,0,0) 50%, rgba(0,0,0,1) 62.5%, rgba(0,0,0,1) 75%, rgba(0,0,0,0) 87.5%);
+    }
+    .gradient-blur-top > div:nth-child(5) {
+      z-index: 6;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      mask: linear-gradient(to top, rgba(0,0,0,0) 62.5%, rgba(0,0,0,1) 75%, rgba(0,0,0,1) 87.5%, rgba(0,0,0,0) 100%);
+      -webkit-mask: linear-gradient(to top, rgba(0,0,0,0) 62.5%, rgba(0,0,0,1) 75%, rgba(0,0,0,1) 87.5%, rgba(0,0,0,0) 100%);
+    }
+    .gradient-blur-top > div:nth-child(6) {
+      z-index: 7;
+      backdrop-filter: blur(32px);
+      -webkit-backdrop-filter: blur(32px);
+      mask: linear-gradient(to top, rgba(0,0,0,0) 75%, rgba(0,0,0,1) 87.5%, rgba(0,0,0,1) 100%);
+      -webkit-mask: linear-gradient(to top, rgba(0,0,0,0) 75%, rgba(0,0,0,1) 87.5%, rgba(0,0,0,1) 100%);
+    }
+    .gradient-blur-top::after {
+      content: "";
+      z-index: 8;
+      backdrop-filter: blur(64px);
+      -webkit-backdrop-filter: blur(64px);
+      mask: linear-gradient(to top, rgba(0,0,0,0) 87.5%, rgba(0,0,0,1) 100%);
+      -webkit-mask: linear-gradient(to top, rgba(0,0,0,0) 87.5%, rgba(0,0,0,1) 100%);
+    }
+    .bottom-row {
+      display: flex;
+      gap: 9px;
+    }
+    .input-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      border: 1px solid rgba(255,255,255,0.8);
+      border-radius: 16px;
+      padding: 9px;
+      gap: 9px;
+    }
+    .input-text {
+      flex: 1;
+      background: none;
+      border: none;
+      outline: none;
+      color: #acacac;
+      font-family: 'Struve', sans-serif;
+      font-size: 16px;
+      padding: 0 7px;
+    }
+    .input-text::placeholder { color: #acacac; }
+    .eq-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      border: 1.2px solid #fff;
+      background: #c9d0b8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .eq-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.25);
+      pointer-events: none;
+    }
+    .eq-btn img { width: 20px; height: 20px; --fill-0: #324919; }
+    .send-btn {
+      width: 58px;
+      height: 58px;
+      border-radius: 18px;
+      border: 1px solid #fff;
+      background: radial-gradient(ellipse at center bottom, #a0ce53, #799b3f 50%, #51682a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .send-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      box-shadow: inset 0 0 24px rgba(0,0,0,0.25);
+      pointer-events: none;
+    }
+    .send-btn img {
+      width: 27px;
+      height: 27px;
+      filter: drop-shadow(0 3px 3px rgba(0,0,0,0.25));
+      --fill-0: #fff;
+    }
+    .powered-by {
+      text-align: center;
+      padding: 6px 0 4px;
+      font-size: 14px;
+      color: #a8a8a8;
+    }
+    .powered-by { font-family: 'Struve', sans-serif; }
+    .powered-by span { color: #8f8f8f; font-weight: 500; }
+
+    /* ===== TYPEWRITER CURSOR ===== */
+    .tw-cursor {
+      display: inline-block;
+      width: 2px;
+      height: 1.1em;
+      background: var(--green);
+      margin-left: 1px;
+      vertical-align: text-bottom;
+      border-radius: 1px;
+      animation: cursorBlink 0.53s step-end infinite;
+    }
+    @keyframes cursorBlink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* ===== SEPARATOR (legacy) ===== */
+  </style>
+</head>
+<body>
+
+<div class="phone" id="phone">
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <span class="icons"><img src="assets/status-bar.svg" alt=""></span>
+  </div>
+
+  <!-- Progressive Blur Overlay (top) -->
+  <div class="gradient-blur-top">
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+
+  <!-- Scrollable Area -->
+  <div class="scroll-area" id="scrollArea">
+    <!-- Hero (morphs between splash and compact) -->
+    <div class="hero splash-state" id="hero">
+      <div class="hero-image-wrap">
+        <img class="hero-image" id="heroImg" src="assets/flower-main.jpg" alt="King Protea">
+        <div class="hero-gradient"></div>
+      </div>
+      <h1 class="hero-title" id="heroTitle">Protea</h1>
+      <p class="hero-subtitle" id="heroSubtitle">a genus of South African<br>flowering plants</p>
+
+      <div class="tooltips" id="tooltips">
+        <button class="tooltip involucre">Involucre</button>
+        <button class="tooltip bracts" onclick="openBracts()">Bracts</button>
+        <button class="tooltip florets">Florets</button>
+        <button class="tooltip receptacle">Receptacle</button>
+      </div>
+    </div>
+
+    <!-- Bracts Detail Content -->
+    <div class="bracts-content" id="bractsContent">
+      <h2 class="bracts-heading">Bracts</h2>
+
+      <p class="bracts-tagline">They're arranged in a Fibonacci spiral — like sunflower seeds.</p>
+
+      <p class="bracts-body">The large, colorful "petals" of a protea aren't actually petals at all — they're bracts, specialized leaves that evolved to protect the tiny true flowers hidden deep inside the bloom.</p>
+
+      <img class="bracts-image" src="imgs/bracts-closeup.jpg" alt="Protea bracts close-up">
+
+      <p class="bracts-body">What makes it even more striking is how these bracts are arranged — they follow a Fibonacci spiral, the same mathematical pattern you see in sunflower seed heads, pinecones, and galaxy arms.</p>
+
+      <img class="bracts-image" src="imgs/spiral.jpg" alt="Golden angle diagram — 137.5°">
+
+      <p class="bracts-body">Each bract is offset from the previous one by roughly 137.5° — the so-called "golden angle" — which allows the flower to pack the maximum number of bracts into the tightest possible space while giving each one equal access to sunlight.</p>
+
+      <img class="bracts-image" src="imgs/protea-overhead.jpg" alt="King Protea from above">
+
+      <p class="bracts-body">So when you look at a king protea from above, you're not just seeing a beautiful flower — you're looking at the same geometry that governs the structure of hurricanes and the arms of the Milky Way, quietly unfolding in a single bloom.</p>
+
+      <div class="questions">
+        <div class="question-card">How does protea hold its shape for 5 years dried?</div>
+        <div class="question-card">What's the logic behind protea's color gradient?</div>
+        <div class="question-card">What other «flowers» are actually leaves?</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progressive Blur Overlay -->
+  <div class="gradient-blur">
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+
+  <!-- Bottom Bar -->
+  <div class="bottom-bar">
+    <div class="bottom-row">
+      <div class="input-wrap">
+        <input class="input-text" type="text" placeholder="Ask anything" readonly>
+        <div class="eq-btn"><img src="assets/eq-icon.svg" alt=""></div>
+      </div>
+      <div class="send-btn"><img src="assets/send-icon.svg" alt=""></div>
+    </div>
+    <div class="powered-by">Powered by <span>Datum</span></div>
+  </div>
+</div>
+
+<script>
+  const hero = document.getElementById('hero');
+  const heroImg = document.getElementById('heroImg');
+  const bractsContent = document.getElementById('bractsContent');
+  const scrollArea = document.getElementById('scrollArea');
+  let isOpen = false;
+  let twAbort = false;
+  let twPendingResolve = null;
+  let autoScrollId = null;
+  const originalBractsHTML = bractsContent.innerHTML;
+
+  function startAutoScroll(delay, duration) {
+    cancelAutoScroll();
+    autoScrollId = setTimeout(() => {
+      const start = scrollArea.scrollTop;
+      const end = scrollArea.scrollHeight - scrollArea.clientHeight;
+      const distance = end - start;
+      if (distance <= 0) return;
+      let t0 = null;
+      function step(ts) {
+        if (!t0) t0 = ts;
+        const progress = Math.min((ts - t0) / duration, 1);
+        scrollArea.scrollTop = start + distance * progress;
+        if (progress < 1) {
+          autoScrollId = requestAnimationFrame(step);
+        } else {
+          scrollArea.scrollTop = scrollArea.scrollHeight - scrollArea.clientHeight;
+          autoScrollId = null;
+        }
+      }
+      autoScrollId = requestAnimationFrame(step);
+    }, delay);
+  }
+
+  function cancelAutoScroll() {
+    if (autoScrollId != null) {
+      cancelAnimationFrame(autoScrollId);
+      clearTimeout(autoScrollId);
+      autoScrollId = null;
+    }
+  }
+
+  function twSleep(ms) {
+    return new Promise(resolve => {
+      twPendingResolve = resolve;
+      setTimeout(() => { twPendingResolve = null; resolve(); }, ms);
+    });
+  }
+
+  function cancelTypewriter() {
+    twAbort = true;
+    if (twPendingResolve) { twPendingResolve(); twPendingResolve = null; }
+  }
+
+  async function typewriter() {
+    twAbort = false;
+    const children = Array.from(bractsContent.children);
+
+    let totalChars = 0;
+    const items = children.map(child => {
+      if (child.classList.contains('questions')) {
+        return { type: 'questions', el: child };
+      } else if (child.tagName === 'IMG') {
+        return { type: 'image', el: child };
+      } else {
+        const text = child.textContent;
+        totalChars += text.length;
+        return { type: 'text', el: child, text };
+      }
+    });
+
+    const charDelay = 7800 / totalChars;
+
+    children.forEach(c => { if (c.tagName !== 'IMG') c.style.opacity = '0'; });
+
+    const cursor = document.createElement('span');
+    cursor.className = 'tw-cursor';
+
+    await twSleep(350);
+
+    for (const item of items) {
+      if (twAbort) break;
+
+      if (item.type === 'text') {
+        item.el.textContent = '';
+        item.el.style.opacity = '1';
+        item.el.appendChild(cursor);
+
+        for (let i = 0; i < item.text.length; i++) {
+          if (twAbort) break;
+          item.el.insertBefore(document.createTextNode(item.text[i]), cursor);
+          
+          await twSleep(charDelay);
+        }
+        cursor.remove();
+
+      } else if (item.type === 'image') {
+        if (twAbort) break;
+        await twSleep(120);
+        item.el.classList.add('revealed');
+        await twSleep(600);
+
+      } else if (item.type === 'questions') {
+        if (twAbort) break;
+        item.el.style.opacity = '1';
+        const cards = item.el.querySelectorAll('.question-card');
+        cards.forEach(c => { c.style.opacity = '0'; c.style.transform = 'translateY(8px)'; });
+        for (const card of cards) {
+          if (twAbort) break;
+          await twSleep(200);
+          card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+          card.style.opacity = '1';
+          card.style.transform = 'translateY(0)';
+        }
+      }
+    }
+
+    if (cursor.parentNode) cursor.remove();
+  }
+
+  function openBracts() {
+    if (isOpen) return;
+    isOpen = true;
+
+    scrollArea.scrollTo({ top: 0, behavior: 'instant' });
+
+    hero.classList.remove('splash-state');
+    hero.classList.add('compact-state');
+
+    bractsContent.classList.add('visible');
+    typewriter();
+    startAutoScroll(2000, 10000);
+  }
+
+  function goBack() {
+    if (!isOpen) return;
+    isOpen = false;
+    cancelTypewriter();
+    cancelAutoScroll();
+
+    bractsContent.style.transition = 'opacity 0.35s var(--ease), transform 0.35s var(--ease)';
+    bractsContent.classList.remove('visible');
+
+    scrollArea.scrollTo({ top: 0, behavior: 'instant' });
+
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        hero.classList.remove('compact-state');
+        hero.classList.add('splash-state');
+        bractsContent.style.transition = '';
+        bractsContent.innerHTML = originalBractsHTML;
+      }, 100);
+    });
+  }
+
+  document.getElementById('hero').addEventListener('click', function(e) {
+    if (isOpen && !e.target.closest('.tooltip')) {
+      goBack();
+    }
+  });
+
+  scrollArea.addEventListener('touchstart', cancelAutoScroll, { passive: true });
+  scrollArea.addEventListener('wheel', cancelAutoScroll, { passive: true });
+</script>
+
+</body>
+</html>
