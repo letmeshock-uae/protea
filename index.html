@@ -63,7 +63,7 @@
       --pad: 18px;
       --ease: cubic-bezier(0.4, 0, 0.2, 1);
       --ease-out: cubic-bezier(0.0, 0, 0.2, 1);
-      --duration: 0.65s;
+      --duration: 1s;
     }
 
     html, body {
@@ -122,7 +122,6 @@
       overflow-y: auto;
       overflow-x: hidden;
       -webkit-overflow-scrolling: touch;
-      scroll-behavior: smooth;
       padding-bottom: 120px;
     }
     .scroll-area::-webkit-scrollbar { display: none; }
@@ -216,7 +215,7 @@
       top: 180px;
       left: 50%;
       transform: translateX(-50%);
-      width: 80%;
+      width: 372px;
       font-family: 'Struve', sans-serif;
       font-weight: 400;
       font-size: clamp(20px, 6.8vw, 30px);
@@ -224,11 +223,11 @@
       color: #fff;
       text-align: center;
       z-index: 2;
-      transition: opacity 0.3s var(--ease), transform 0.4s var(--ease);
+      transition: opacity 0.5s var(--ease), transform var(--duration) var(--ease);
     }
     .compact-state .hero-subtitle {
       opacity: 0;
-      transform: translateX(-50%) translateY(-10px);
+      transform: translateX(-50%) translateY(120px);
     }
 
     /* ===== TOOLTIPS ===== */
@@ -266,10 +265,10 @@
       transform: scale(0.95);
       box-shadow: 0 0 0 3px rgba(255,255,255,0.5);
     }
-    .tooltip.involucre  { top: 38%;  left: 8%;   transition-delay: 0.05s; }
-    .tooltip.bracts     { top: 52%;  left: 38%;  transition-delay: 0.1s;  }
-    .tooltip.florets    { top: 58%;  left: 8%;   transition-delay: 0.15s; }
-    .tooltip.receptacle { top: 72%;  left: 55%;  transition-delay: 0.2s;  }
+    .tooltip.involucre  { top: 299px; left: 39px;  transition-delay: 0.05s; }
+    .tooltip.bracts     { top: 403px; left: 205px; transition-delay: 0.1s;  }
+    .tooltip.florets    { top: 463px; left: 88px;  transition-delay: 0.15s; }
+    .tooltip.receptacle { top: 588px; left: 228px; transition-delay: 0.2s;  }
 
     /* ===== BRACTS DETAIL CONTENT ===== */
     .bracts-content {
@@ -646,7 +645,7 @@
     <!-- Hero (morphs between splash and compact) -->
     <div class="hero splash-state" id="hero">
       <div class="hero-image-wrap">
-        <img class="hero-image" id="heroImg" src="assets/flower-main.jpg" alt="King Protea">
+        <img class="hero-image" id="heroImg" src="assets/flower-main2.png" alt="King Protea">
         <div class="hero-gradient"></div>
       </div>
       <h1 class="hero-title" id="heroTitle">Protea</h1>
@@ -666,19 +665,19 @@
 
       <p class="bracts-tagline">They're arranged in a Fibonacci spiral — like sunflower seeds.</p>
 
-      <p class="bracts-body">The large, colorful "petals" of a protea aren't actually petals at all — they're bracts, specialized leaves that evolved to protect the tiny true flowers hidden deep inside the bloom.</p>
+      <p class="bracts-body">The large, colorful «petals» of a protea aren't actually petals at all. They're bracts, specialised leaves that evolved to protect the tiny true flowers hidden inside the bloom.</p>
 
       <img class="bracts-image" src="imgs/bracts-closeup.jpg" alt="Protea bracts close-up">
 
-      <p class="bracts-body">What makes it even more striking is how these bracts are arranged — they follow a Fibonacci spiral, the same mathematical pattern you see in sunflower seed heads, pinecones, and galaxy arms.</p>
+      <p class="bracts-body">And here's the trick: these bracts follow a Fibonacci spiral, the same mathematical pattern you see in sunflower seed heads, pinecones, and galaxy arms.</p>
 
       <img class="bracts-image" src="imgs/spiral.jpg" alt="Golden angle diagram — 137.5°">
 
-      <p class="bracts-body">Each bract is offset from the previous one by roughly 137.5° — the so-called "golden angle" — which allows the flower to pack the maximum number of bracts into the tightest possible space while giving each one equal access to sunlight.</p>
+      <p class="bracts-body">Each bract is offset from the previous one by roughly 137.5° — the so-called «golden angle» — which allows the flower to pack the maximum number of bracts into the tightest possible space while giving each one equal access to sunlight.</p>
 
       <img class="bracts-image" src="imgs/protea-overhead.jpg" alt="King Protea from above">
 
-      <p class="bracts-body">So when you look at a king protea from above, you're not just seeing a beautiful flower — you're looking at the same geometry that governs the structure of hurricanes and the arms of the Milky Way, quietly unfolding in a single bloom.</p>
+      <p class="bracts-body">So when you look at a king protea from above, you're looking at the same geometry that governs the structure of hurricanes and the arms of the Milky Way.</p>
 
       <div class="questions">
         <div class="question-card">How does protea hold its shape for 5 years dried?</div>
