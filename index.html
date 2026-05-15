@@ -154,13 +154,14 @@
       position: absolute;
       inset: 0;
       overflow: hidden;
+      z-index: 2;
       transition: border-radius var(--duration) var(--ease);
     }
     .compact-state .hero-image-wrap { border-radius: 8px; }
 
     .hero-image {
       position: absolute;
-      top: 66px;
+      top: 114px;
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -222,7 +223,7 @@
       line-height: 0.9;
       color: #fff;
       text-align: center;
-      z-index: 2;
+      z-index: 1;
       transition: opacity 0.5s var(--ease), transform var(--duration) var(--ease);
     }
     .compact-state .hero-subtitle {
@@ -265,10 +266,10 @@
       transform: scale(0.95);
       box-shadow: 0 0 0 3px rgba(255,255,255,0.5);
     }
-    .tooltip.involucre  { top: 299px; left: 39px;  transition-delay: 0.05s; }
-    .tooltip.bracts     { top: 403px; left: 205px; transition-delay: 0.1s;  }
-    .tooltip.florets    { top: 463px; left: 88px;  transition-delay: 0.15s; }
-    .tooltip.receptacle { top: 588px; left: 228px; transition-delay: 0.2s;  }
+    .tooltip.involucre  { top: 347px; left: 39px;  transition-delay: 0.05s; }
+    .tooltip.bracts     { top: 451px; left: 205px; transition-delay: 0.1s;  }
+    .tooltip.florets    { top: 511px; left: 88px;  transition-delay: 0.15s; }
+    .tooltip.receptacle { top: 636px; left: 228px; transition-delay: 0.2s;  }
 
     /* ===== BRACTS DETAIL CONTENT ===== */
     .bracts-content {
