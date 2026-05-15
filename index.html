@@ -122,7 +122,7 @@
       overflow-y: auto;
       overflow-x: hidden;
       -webkit-overflow-scrolling: touch;
-      padding-bottom: 120px;
+      padding-bottom: 128px;
     }
     .scroll-area::-webkit-scrollbar { display: none; }
 
@@ -725,21 +725,20 @@
   function startAutoScroll(delay, duration) {
     cancelAutoScroll();
     autoScrollId = setTimeout(() => {
-      const start = scrollArea.scrollTop;
-      const end = scrollArea.scrollHeight - scrollArea.clientHeight;
-      const distance = end - start;
-      if (distance <= 0) return;
       let t0 = null;
       function step(ts) {
         if (!t0) t0 = ts;
-        const progress = Math.min((ts - t0) / duration, 1);
-        scrollArea.scrollTop = start + distance * progress;
-        if (progress < 1) {
-          autoScrollId = requestAnimationFrame(step);
-        } else {
-          scrollArea.scrollTop = scrollArea.scrollHeight - scrollArea.clientHeight;
+        const elapsed = ts - t0;
+        const end = scrollArea.scrollHeight - scrollArea.clientHeight;
+        const current = scrollArea.scrollTop;
+        if (current >= end - 1 || elapsed >= duration) {
           autoScrollId = null;
+          return;
         }
+        const remaining = end - current;
+        const speed = remaining / Math.max(duration - elapsed, 200);
+        scrollArea.scrollTop = current + speed * 16;
+        autoScrollId = requestAnimationFrame(step);
       }
       autoScrollId = requestAnimationFrame(step);
     }, delay);
